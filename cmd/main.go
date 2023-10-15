@@ -35,6 +35,7 @@ func main() {
 	e.Static("/css", "../css")
 
 	e.GET("/", pages.Index)
+	e.POST("/messages", pages.AddMessage)
 
 	e.Logger.Fatal(e.Start(":42069"))
 }
