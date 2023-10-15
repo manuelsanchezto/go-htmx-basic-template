@@ -1,0 +1,30 @@
+{{define "starting-message"}}
+<span class="initial-message">Vamos a empezar con algo de texto inicial</span>
+{{ end}}
+
+{{define "messages"}}
+<div class="messages">
+    {{ range .Messages }}
+    <div class="message">
+        <span class="message-text">{{ .Text }}</span>
+        <span class="message-time">{{ .Time }}</span>
+    </div>
+    {{ end }}
+</div>
+{{ end }}
+
+{{define "input"}}
+<form class="input" hx-post="/api/messages">
+    <input type="text" name="text" placeholder="Escribe un mensaje">
+    <button type="submit">Enviar</button>
+</form>
+{{ end }}
+
+
+{{define "conversacion"}}
+<div class="messaging-space">
+    {{ template "starting-message" .}}
+    {{ template "messages" . }}
+    {{ template "input" . }}
+</div>
+{{ end }}

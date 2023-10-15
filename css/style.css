@@ -3,4 +3,13 @@
     gap: 1rem;
 }
 
+.messaging-space {
+    height: 95vh;
+    background-color: rgb(184, 182, 182);
+}
+
+.starting-message {
+    color: black;
+}
+
 
