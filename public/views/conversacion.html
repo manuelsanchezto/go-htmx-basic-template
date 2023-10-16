@@ -3,10 +3,11 @@
 {{ end}}
 
 {{define "messages"}}
-<div class="messages">
+<div class="messages" id="messages">
     {{ range .Messages }}
     <div class="message">
         <span class="message-text">{{ .Text }}</span>
+        <br>
         <span class="message-time">{{ .Time }}</span>
     </div>
     {{ end }}
@@ -14,8 +15,9 @@
 {{ end }}
 
 {{define "input"}}
-<form class="input" hx-post="/messages">
-    <input type="text" name="text" placeholder="Escribe un mensaje">
+<form class="input" hx-post="/messages" hx-target="body" hx-swap="outerHTML">
+    <input type="hidden" name="user" value="{{ .User}}">
+    <input type="text" name="messagetext" placeholder="Escribe un mensaje">
     <button type="submit">Enviar</button>
 </form>
 {{ end }}
