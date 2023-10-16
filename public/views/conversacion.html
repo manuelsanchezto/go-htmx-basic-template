@@ -1,18 +1,49 @@
 {{define "starting-message"}}
-<span class="initial-message">Vamos a empezar con algo de texto inicial</span>
+<span class="initial-message">Bienvenido al asistente de configuración de SISnet potenciado por IA</span>
 {{ end}}
 
 {{define "messages"}}
 <div class="messages" id="messages">
-    {{ range .Messages }}
-    <div class="message">
-        <span class="message-text">{{ .Text }}</span>
-        <br>
-        <span class="message-time">{{ .Time }}</span>
+    <div class="messages-container">
+        {{ range .Messages }}
+            {{if .IsFromUser}}
+            <div class="message-user">
+
+                <span class="message-text">{{ .Text }}
+                    <br><span class="message-time">{{ .Time }}</span>
+                </span>
+            </div>
+            {{else}}
+                {{if .IsLast}}
+                    {{if $.FullResponses}}
+                    <div class="message-server">
+                        <span class="message-text">{{ .Text }}
+                            <br><span class="message-time">{{ .Time }}</span>
+                        </span>
+                    </div>
+                    {{else}}
+                    <div hx-trigger="done" hx-get="/?user={{$.User}}" hx-swap="outerHTML" hx-target="this">
+                        <h3 role="status" id="pblabel" tabindex="-1" autofocus>Pensando</h3>
+
+                        <div hx-get="/?user={{$.User}}" hx-trigger="every 600ms" hx-target="body">
+                        </div>
+                    </div>
+                    {{end}}
+                {{else}}
+                    <div class="message-server">
+                        <span class="message-text">{{ .Text }}
+                            <br><span class="message-time">{{ .Time }}</span>
+                        </span>
+                    </div>
+                {{end}}
+
+            {{ end }}
+
+        {{ end }}
+        </div>
+            
     </div>
-    {{ end }}
-</div>
-{{ end }}
+{{end}}
 
 {{define "input"}}
 <form class="input" hx-post="/messages" hx-target="body" hx-swap="outerHTML">

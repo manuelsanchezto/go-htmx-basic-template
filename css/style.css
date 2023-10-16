@@ -1,6 +1,8 @@
 .menu{
     display: flex;
     gap: 1rem;
+    flex-direction: column;
+    width: 400px;
 }
 
 .messaging-space {
@@ -12,4 +14,39 @@
     color: black;
 }
 
+.messages{
+    height: 85vh;
+}
 
+.message-container{
+    display: flex;
+    flex-direction: column;
+}
+
+.message-user{
+    display:flex;
+    flex-direction: row-reverse;
+    margin-left: 10%;
+}
+
+.message-server{
+    display:flex;
+    flex-direction: row;
+    margin-right: 10%;
+}
+
+
+.message-time{
+    font-size: small;
+    font-style: italic;
+    font-weight: lighter;
+    align-self: self-end;
+}
+
+.message-text{
+    font-size: large;
+    font-weight: bolder;
+    display: flex;
+    flex-direction: column;
+   
+}
