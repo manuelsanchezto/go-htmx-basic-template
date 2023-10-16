@@ -25,7 +25,7 @@ func AddMessage(c echo.Context) error {
 	user := c.FormValue("user")
 	log.Println("usuario: ", user)
 	text := c.FormValue("messagetext")
-	var Messages = appendnews(user, entities.Message{text, true, time.Now().String()})
+	var Messages = appendnews(user, entities.Message{text, true, time.Now().Format("15:04:05")})
 	return c.Render(200, "index.html", entities.ConversationByUsers{
 		Messages: Messages,
 		User:     user,
