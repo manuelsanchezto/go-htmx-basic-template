@@ -5,13 +5,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
+    <script src="https://unpkg.com/htmx.org/dist/ext/class-tools.js"></script>
     <title>Document</title>
-    <link href="/css/style.css" rel="stylesheet">
+    <link href="./../css/style.css" rel="stylesheet">
 </head>
 <body>
     <div class="menu">
-        {{ template "conversacion" . }}
-
+        <div class="messaging-space">
+            {{ template "actions" . }}
+            {{ template "messages" . }}
+            {{ template "inputMessages" .}}
+        </div>
     </div>
+    <script>
+        function cerrarIframe() {parent.window.postMessage({type: 'close'}, '*');}
+        window.addEventListener('message', event => {
+            console.log("Ha llegado el mensaje "+event.data);
+        })
+
+        document.addEventListener('htmx:afterSwap', function(event) {
+            let elemento = document.querySelector('.messages');
+            let altura = elemento.scrollHeight;
+            elemento.scrollTop = altura;
+        });
+        
+    </script>
 </body>
 </html>

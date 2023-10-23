@@ -1,0 +1,7 @@
+{{define "inputMessages"}}
+<form class="input"id="formEntrada" hx-post="/messages" hx-target="body" hx-swap="outerHTML">
+    <input type="hidden" name="user" value="{{ .User}}">
+    <input type="text" name="question" placeholder="Escribe un mensaje">
+    <button type="submit" id="buttonSend">Enviar</button>
+</form>
+{{end}}
