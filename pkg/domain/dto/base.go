@@ -37,7 +37,7 @@ type BusinessLine struct {
 	Cicloren  string `json:"cicloren"`
 	Duracann  int    `json:"duracann"`
 	Descridab string `json:"descridab"`
-	Duractip  int    `json:"duractip"`
+	Duractip  string `json:"duractip"`
 	Fechaefe  string `json:"fechaefe"`
 	Fmprocol  string `json:"fmprocol"`
 	Lsfljfor  string `json:"lsfljfor"`
@@ -59,11 +59,11 @@ type BusinessLine struct {
 }
 
 type ProductPaymentMethod struct {
-	Mediopag string `json:"mediopag"`
-	Medireci string `json:"medireci"`
-	Mediexto string `json:"mediexto"`
-	Swexcole bool   `json:"swexcole"`
-	Recimini int    `json:"recimini"`
+	Mediopag string  `json:"mediopag"`
+	Medireci string  `json:"medireci"`
+	Mediexto string  `json:"mediexto"`
+	Swexcole bool    `json:"swexcole"`
+	Recimini float32 `json:"recimini"`
 }
 
 type ProductRenewalCycle struct {
