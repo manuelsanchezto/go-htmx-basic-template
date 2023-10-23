@@ -1,6 +1,7 @@
 package pages
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -12,6 +13,9 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"htmx.try/m/v2/pkg/dbconn"
 	"htmx.try/m/v2/pkg/domain"
 	"htmx.try/m/v2/pkg/domain/dto"
@@ -85,23 +89,69 @@ func CloseActions(c echo.Context) error {
 
 func GetBussinessLine(c echo.Context) error {
 	user := c.FormValue("user")
+	log.Println(user)
 	respuesta := getLastResponse(user)
 	if respuesta == nil {
+		log.Println("No hay respuesta")
 		return nil
 	}
 	mensajeServidor := getLastConversation(user)
 	if mensajeServidor == nil {
+		log.Println("No hay mensaje del servidor")
 		return nil
 	}
-
-	getBussinessLine(*respuesta, mensajeServidor.Question.Text)
+	loadBussinessLine(*respuesta, mensajeServidor.Question.Text)
 
 	return nil
 
 }
 
-func getBussinessLine(respuesta domain.Response, textoServidor string) {
+func NewMongoDB() *mongo.Client {
+	// Set client options
+	clientOptions := options.Client().ApplyURI("mongodb://root:example@20.56.93.5:27017")
 
+	// Connect to MongoDB
+	client, err := mongo.Connect(context.Background(), clientOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Check the connection
+	err = client.Ping(context.Background(), nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Connected to MongoDB!")
+
+	return client
+}
+func loadBussinessLine(respuesta domain.Response, textoServidor string) string {
+	var introducir = DataIn{_id: primitive.NewObjectID(), texto: textoServidor}
+	err := SaveJSONData(NewMongoDB(), "copilot", "responses", introducir)
+	if err != nil {
+		return introducir._id.Hex()
+	}
+	return ""
+}
+
+type DataIn struct {
+	_id   primitive.ObjectID
+	texto string
+}
+
+func SaveJSONData(client *mongo.Client, databaseName string, collectionName string, data interface{}) error {
+	// Get a handle for your collection
+	collection := client.Database(databaseName).Collection(collectionName)
+
+	// Insert a single document
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_, err := collection.InsertOne(ctx, data)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func getLastResponse(user string) *domain.Response {
@@ -151,7 +201,6 @@ func generateMessage(user string, module string) {
 			//response = "Respuesta del servidor"
 			//resp := &response
 
-
 			if resp == nil {
 				response = "Ha ocurrido un error"
 			} else {
@@ -180,25 +229,26 @@ func recoverExample() *dto.Base {
 
 func requestAnswer(message domain.Message, user string, module string) *string {
 
-	/*if !checkStatus() {
+	if !checkStatus() {
 		err := "Server disconnected"
 		log.Println(err)
 		return nil
-	}*/
+	}
 
 	messageNoSpaces := strings.Replace(message.Text, " ", "%20", -1)
-	base, _:= getBase(messageNoSpaces)
-	//sections, errSections := getSections(messageNoSpaces, module)
+	base, errBase := getBase(messageNoSpaces)
 
-	/*if errBase != nil || errSections != nil {
+	sections, errSections := getSections(messageNoSpaces, module)
+
+	if errBase != nil || errSections != nil {
 		fmt.Println(errBase)
 		fmt.Println(errSections)
 		return nil
-	}*/
+	}
 
 	producto := base.Result.Business_line_data.Business_line.Producto
 	var props []string
-	//props = append(props, sections.Result.AdditionalProp1, sections.Result.AdditionalProp2, sections.Result.AdditionalProp3)
+	props = append(props, sections.Result.AdditionalProp1, sections.Result.AdditionalProp2, sections.Result.AdditionalProp3)
 	mensaje := fmt.Sprintf("Si te he entendido correctamente, quieres que realice cambios sobre la linea de negocio %s, sobre las siguientes secciones:\n -%v", producto, props)
 	//Guardamos respuesta en base de datos
 	response := domain.NewResponse(props, base.Result.Business_line_data)
@@ -238,9 +288,8 @@ func getBase(message string) (*dto.Base, error) {
 			log.Println("Impossible to parse the response " + err.Error())
 			return nil, err
 		}
-
 		return &response, nil
-	}else{
+	} else {
 		return recoverExample(), nil
 	}
 
@@ -270,6 +319,10 @@ func getSections(message string, module string) (*dto.SectionsToEdit, error) {
 			log.Println("Impossible to parse the response " + err.Error())
 			return nil, err
 		}
+		log.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+		log.Println(response)
+		log.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+
 		return &response, nil
 	}
 
