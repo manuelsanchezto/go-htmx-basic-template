@@ -12,9 +12,11 @@
 <body>
     <div class="menu">
         <div class="messaging-space">
-            {{ template "actions" . }}
-            {{ template "messages" . }}
-            {{ template "inputMessages" .}}
+            <form class="input"id="formEntrada" hx-post="/messages" hx-target="body" hx-swap="outerHTML">
+                {{ template "actions" . }}
+                {{ template "messages" . }}
+                {{ template "inputMessages" .}}
+            </form>
         </div>
     </div>
     <script>
