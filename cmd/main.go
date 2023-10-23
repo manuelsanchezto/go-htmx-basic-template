@@ -36,7 +36,9 @@ func main() {
 
 	e.GET("/", pages.Index)
 	e.POST("/messages", pages.AddMessage)
-	e.GET("/messages", pages.AddMessage)
+	e.GET("/ignorePrompt", pages.CloseActions)
+	e.GET("/acceptPrompt", pages.GetBussinessLine)
+	e.GET("/newConversation", pages.StartNewConversation)
 
 	e.Logger.Fatal(e.Start(":42069"))
 }

@@ -1,0 +1,43 @@
+{{define "messages"}}
+
+<div class="messages" id="messages">
+    {{if not .Conversations}}
+    <span class="initial-message">Bienvenido al asistente de configuración de SISnet potenciado por IA</span>
+    {{else}}
+        {{ range .Conversations}}
+        <div class="messages-container">
+            <div class="message-user">
+                <span class="message-text">{{ .Question.Text }}
+                    <br><span class="message-time">{{ .Question.Time }}</span>
+                </span>
+            </div>
+            {{if .IsAnswered}}
+            <div class="message-server">
+                <span class="message-text">{{ .Answer.Text }}
+                    {{ if .IsLast}}
+                    <div id="buttonsResp" class="{{ .Actions }}">
+                        <button id="buttonAccept" hx-get="/acceptPrompt" hx-target="body"
+                            hx-swap="outerHTML">Aceptar</button>
+                        <button id="buttonCancel" hx-get="/ignorePrompt" hx-target="body"
+                            hx-swap="outerHTML">Cancelar</button>
+                    </div>
+                    {{ end }}
+                    <br><span class="message-time">{{ .Answer.Time }}</span>
+                </span>
+            </div>
+            {{else}}
+            <div hx-trigger="done" hx-get="/?user={{$.User}}" hx-swap="outerHTML" hx-target="this">
+                <h3 role="status" id="pblabel" tabindex="-1">Pensando</h3>
+
+                <div hx-get="/?user={{$.User}}" hx-trigger="every 600ms" hx-target="body">
+                </div>
+            </div>
+            {{end}}
+        </div>
+        {{end}}
+    {{end}}
+</div>
+<hr>
+{{end}}
+
+

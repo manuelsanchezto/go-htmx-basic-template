@@ -1,0 +1,38 @@
+{{ define "actions" }}
+{{template "closeIframe" .}}
+<div class="lineaAcciones">
+    <div>
+        <h4 class="titulo">SisNet Chatboot</h4>
+    </div>
+    <div>
+        {{template "newConvButton" .}}
+        {{template "dropdownModule" .}}
+    </div>
+    <hr>
+</div>
+{{ end }}
+
+{{define "newConvButton"}}
+<div class="nuevaConversacion">
+    <button hx-get="/newConversation?user={{.User}}" hx-target="body" hx-swap="outerHTML" 
+    hx-confirm="¿Quiere empezar una nueva conversación? Se borrará la conversación actual"
+    >Nueva conversación</button>
+</div>
+{{end}}
+
+{{define "closeIframe"}}
+<div class="aspa-cierre">
+    <a onclick="cerrarIframe()">x</a>
+</div>
+{{end}}
+
+
+{{ define "dropdownModule" }}
+<label>
+    <select class="selectModulo" name="module">
+        <option value="business_line" selected>Línea de negocio</option>
+        <option value="coverage">Cobertura</option>
+        <option value="technical_product">Producto técnico</option>
+    </select>
+</label>
+{{ end }}
