@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
     <script src="https://unpkg.com/htmx.org/dist/ext/class-tools.js"></script>
-    <title>Document</title>
+    <title>SISnet Copilot</title>
     <link href="./../css/style.css" rel="stylesheet">
+    <script>
+    </script>
 </head>
 <body>
     <div class="menu">
@@ -21,9 +23,7 @@
     </div>
     <script>
         function cerrarIframe() {parent.window.postMessage({type: 'close'}, '*');}
-        window.addEventListener('message', event => {
-            console.log("Ha llegado el mensaje "+event.data);
-        })
+        
 
         document.addEventListener('htmx:afterSwap', function(event) {
             let elemento = document.querySelector('.messages');
